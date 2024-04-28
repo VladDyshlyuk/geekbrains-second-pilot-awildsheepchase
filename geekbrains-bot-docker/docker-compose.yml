@@ -12,7 +12,4 @@ services:
       - API_URL = ${API_URL}
       - HUMAN_EXPERT_USERNAME = ${USERNAME_EXPERT}
       - EXPERT_CHAT_ID = ${CHAT_ID_EXPERT}
-    volumes:
-      - "/codebase:/codebase"
-      - "/storage:/storage"
     restart: always
