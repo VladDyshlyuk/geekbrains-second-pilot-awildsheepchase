@@ -40,3 +40,10 @@ Run the container
 2024-04-28 10:25:34  * Running on http://172.17.0.2:5000
 2024-04-28 10:25:34 Press CTRL+C to quit
 ```
+## Run API in Colab
+Вы можете быстро запустить временный API Endpoint с помощью Googl Colab и Cloudfare Quick Tunnel. Не забудьте загрузить датасет. 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1xWDvV-xiXLfbSfDK5PC9YXHpOqii6KHM?usp=sharing/)
+
+## Run Bot in Colab
+Вы также можете запустить бота с помощью Colab и Endpoint выше. Не забудьте изменить Credentials для Telegram Bot API. 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/)
