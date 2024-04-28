@@ -47,3 +47,5 @@ Run the container
 ## Run Bot in Colab
 Вы также можете запустить бота с помощью Colab и Endpoint выше. Не забудьте изменить Credentials для Telegram Bot API. 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/)
+
+##Прочие использовавшиеся вариации ноутбуков находятся в папке notebooks
