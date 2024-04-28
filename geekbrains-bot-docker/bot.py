@@ -1,6 +1,9 @@
+from dotenv import load_dotenv
+load_dotenv()
+
 import nest_asyncio
 nest_asyncio.apply()
-
+import os
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, MessageHandler, CallbackContext, CallbackQueryHandler, filters
 import requests
@@ -13,10 +16,10 @@ import json
 # logger = logging.getLogger(name)
 
 # Constants
-API_URL = "YOUR_URL"
-HUMAN_EXPERT_TGID = "USERNAME_TELEGRAM"
-YOUR_TOKEN = "YOUR_BOT_TOKEN"
-EXPERT_CHAT_ID = "CHAT_ID_EXPERT"
+API_URL = os.getenv('API_URL')
+HUMAN_EXPERT_USERNAME = os.getenv('USERNAME_EXPERT')
+YOUR_TOKEN = os.getenv('BOT_TOKEN')
+EXPERT_CHAT_ID = os.getenv('CHAT_ID_EXPERT')
 
 
 
@@ -84,7 +87,7 @@ async def handle_question_selection(update: Update, context: CallbackContext) ->
 
         # Notify the user that an expert will be contacted
         await query.edit_message_text(
-            text=f"Вот Telegram ID нашего эксперта: {HUMAN_EXPERT_TGID}. Я уже сообщил им о вашем вопросе, и они свяжутся с вами в ближайшее время. Вы также можете написать им самостоятельно. Если у вас есть другие вопросы, не стесняйтесь задавать их – я здесь, чтобы помочь!", reply_markup=None
+            text=f"Вот Telegram ID нашего эксперта: {HUMAN_EXPERT_USERNAME}. Я уже сообщил им о вашем вопросе, и они свяжутся с вами в ближайшее время. Вы также можете написать им самостоятельно. Если у вас есть другие вопросы, не стесняйтесь задавать их – я здесь, чтобы помочь!", reply_markup=None
                 
         )
 
