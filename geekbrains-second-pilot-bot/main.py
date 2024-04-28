@@ -13,49 +13,57 @@ import json
 # logger = logging.getLogger(name)
 
 # Constants
-API_URL = "https://valley-zu-reservation-starts.trycloudflare.com"
-HUMAN_EXPERT_TGID = "@vdyshlyuk"
-YOUR_TOKEN = "6649231948:AAHwFKlsJKO6jYrYMpXE141I6ISTyJbnyl0"
-EXPERT_CHAT_ID = "1058344593"
+API_URL = "YOUR_URL"
+HUMAN_EXPERT_TGID = "USERNAME_TELEGRAM"
+YOUR_TOKEN = "YOUR_BOT_TOKEN"
+EXPERT_CHAT_ID = "CHAT_ID_EXPERT"
+
+
 
 YES_NO_KEYBOARD = InlineKeyboardMarkup([
-    [InlineKeyboardButton("Yes", callback_data='yes'), InlineKeyboardButton("No", callback_data='no')]
+    [InlineKeyboardButton("Да", callback_data='yes'), InlineKeyboardButton("Нет", callback_data='no')]
 ])
 
 async def start(update: Update, context: CallbackContext) -> None:
-    """Sends a welcome message and asks the user to ask a question."""
+    
     await update.message.reply_text(
-        "Hello! I am your assistant. Please ask your question by typing it directly into this chat."
+        "Привет! 👋 \n"
+    "Я — ваш личный помощник от GeekBrains. Я здесь, чтобы помочь вам с навигацией по курсам, ответить на ваши вопросы о занятиях и "
+    "предоставить необходимую информацию об обучении.\n\n"
+    "Чем могу помочь сегодня? Вы можете спросить меня о расписании занятий, деталях курсов "
+    "и многом другом. Просто введите свой вопрос, и я постараюсь помочь вам как можно скорее!\n\n"
+    "Если хотите начать напишите свой вопрос. 📚🖊️"
     )
 
 async def ask_question(update: Update, context: CallbackContext) -> None:
-    """Sends the user's question to the API and handles the response."""
+    
     question = update.message.text
     context.user_data['question'] = question
 
     response = requests.get(f"{API_URL}/ask?query={question}")
     data = response.json()
-    answer = data.get('answer_text', 'No answer found.')
+    answer = data.get('answer_text', 'Прошу прощения, ответ не был найден.')
 
     await update.message.reply_text(answer)
-    await update.message.reply_text("Did this answer help you?", reply_markup=YES_NO_KEYBOARD)
+    await update.message.reply_text("Это то, что вас интересовало?", reply_markup=YES_NO_KEYBOARD)
 
 async def handle_callback(update: Update, context: CallbackContext) -> None:
-    """Handles Yes/No callback from Inline Keyboard."""
+
     query = update.callback_query
     await query.answer()
 
     if query.data == 'yes':
-        await query.edit_message_text(text="Happy to help! Feel free to ask another question.", reply_markup=None)
+        await query.edit_message_text(text="Рад был помочь! Если у вас есть ещё вопросы, не стесняйтесь задавать их. 👍", reply_markup=None)
     elif query.data == 'no':
+
         question = context.user_data.get('question')
         response = requests.get(f"{API_URL}/clarify?question={question}")
         data = response.json()
         similar_questions = json.loads(data)
         keyboard = [[InlineKeyboardButton(str(index+1), callback_data=str(index))] for index in range(len(similar_questions))]
-        keyboard.append([InlineKeyboardButton("None of these", callback_data='none')])
+        keyboard.append([InlineKeyboardButton("Никакой не подходит", callback_data='none')])
 
-        message_text = "Choose the question most similar to yours:\n" + \
+        message_text = "Пожалуйста, выберите вопрос, наиболее схожий с вашим:\n" + \
                        '\n'.join(f"{idx+1}. {q}" for idx, q in enumerate(similar_questions))
         await query.edit_message_text(text=message_text, reply_markup=InlineKeyboardMarkup(keyboard))
 
@@ -76,22 +84,19 @@ async def handle_question_selection(update: Update, context: CallbackContext) ->
 
         # Notify the user that an expert will be contacted
         await query.edit_message_text(
-            text=f"Here is the TG ID of a human expert {HUMAN_EXPERT_TGID}. "
-                 "I have informed them about your query. They will contact you as soon "
-                 "as possible or you can contact them by yourself. Feel free to ask other questions.", reply_markup=None
+            text=f"Вот Telegram ID нашего эксперта: {HUMAN_EXPERT_TGID}. Я уже сообщил им о вашем вопросе, и они свяжутся с вами в ближайшее время. Вы также можете написать им самостоятельно. Если у вас есть другие вопросы, не стесняйтесь задавать их – я здесь, чтобы помочь!", reply_markup=None
                 
         )
 
         # Send message to the expert about the user's question
         expert_chat_id = EXPERT_CHAT_ID  # Replace this with your expert's actual chat_id
-        user_question = context.user_data.get('question', 'No specific question recorded.')
+        user_question = context.user_data.get('question', 'Неизвестный вопрос.')
         message_for_expert = (
-            f"A user has requested assistance:\n\n"
-            f"Name: {full_name}\n"
-            f"Telegram ID: {user_id}\n"
-            f"Question: {user_question}\n\n"
-            f"Username: {user_username}\n\n"
-            "Please respond to the user soon."
+           f"Пользователь запросил помощь:\n\n"
+            f"Имя: {full_name}\n"
+            f"Телеграм-логин: {user_id}\n"
+            f"Вопрос: {user_question}\n\n"
+            f"Пожалуйста, ответьте пользователю в ближайшее время."
         )
         await context.bot.send_message(
             chat_id=expert_chat_id,
@@ -105,7 +110,7 @@ async def handle_question_selection(update: Update, context: CallbackContext) ->
         print(question)
         answer =requests.get(f"{API_URL}/ask?query={question}").json()['answer_text']
         await query.edit_message_text(answer)
-        await query.message.reply_text("Did this answer help you?", reply_markup=YES_NO_KEYBOARD)
+        await query.message.reply_text("Это то, что вас интересовало?", reply_markup=YES_NO_KEYBOARD)
 
 async def main():
     """Start the bot."""
